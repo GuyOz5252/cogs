@@ -1,0 +1,43 @@
+---
+description: Always use curly braces for blocks (C#)
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Braces for every block
+
+Use **`{ }` around the body** of every control-flow statement (`if`, `else`, `for`, `foreach`, `while`, `do`, `using` when multi-line matters, `fixed`, etc.), even when the body is a single statement.
+
+Do **not** omit braces for “one-liners” — it avoids subtle bugs when someone adds a second line later.
+
+## Examples
+
+```csharp
+// ❌ BAD
+if (x == null)
+    return Result.Failure(error);
+
+// ✅ GOOD
+if (x == null)
+{
+    return Result.Failure(error);
+}
+```
+
+```csharp
+// ❌ BAD
+foreach (var id in ids)
+    await ProcessAsync(id);
+
+// ✅ GOOD
+foreach (var id in ids)
+{
+    await ProcessAsync(id);
+}
+```
+
+Exception: **expression-bodied members** (`=>`) are fine when they are a single expression, not a block:
+
+```csharp
+public string Name => _name;
+```

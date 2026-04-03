@@ -1,0 +1,18 @@
+---
+description: One public type per file (C#), with documented exceptions
+globs: **/*.cs
+alwaysApply: false
+---
+
+# One type per file
+
+Prefer **one top-level `class`, `record`, `interface`, or `struct` per `.cs` file**. Name the file to match the primary type (e.g. `UserService.cs` for `UserService`).
+
+## Exceptions (allowed in the same file)
+
+- **REPR / minimal APIs**: Request and response **records** may live in the same file as the endpoint class that uses them (grouped with that endpoint).
+- **MediatR-style handlers**: A **command/query handler** class may sit in the same file as its related types when the pattern is `CommandHandler` with or without a `TResult` type parameter (e.g. handler + nested or colocated types that are only used by that handler).
+
+## When in doubt
+
+If multiple types are only used together and match one of the exceptions above, colocation is fine. If a type is reused elsewhere or is a domain/service type on its own, give it its own file.

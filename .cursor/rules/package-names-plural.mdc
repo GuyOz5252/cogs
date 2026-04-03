@@ -1,0 +1,22 @@
+---
+description: Folder/namespace segments (packages) use plural names, with listed exceptions
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Package (folder) names: prefer plural
+
+When adding or naming **folder segments** that group features (the “package” path under a project, e.g. `Sunday.Application/Clients/...`), use **plural** names for the aggregate/feature: `Clients`, `Brands`, `Tickets`, `WorkSessions`, not `Client` or `Brand`.
+
+## Exceptions
+
+- **Abstractions root**: A folder for shared interfaces/abstractions may be **`Abstract`** (not treated as a plural “domain” name).
+- **Use-case subfolders**: Under a plural feature folder, a **verb/action** segment is fine and is **not** plural — e.g. `Clients/Create`, `Tickets/UpdateStatus`, `WorkSessions/Start`. The plural applies to the feature; the inner folder names the operation.
+
+## Examples
+
+```text
+✅ Sunday.Application/Clients/Create/CreateClientCommand.cs
+✅ Sunday.Core/Abstract/IClientRepository.cs
+❌ Sunday.Application/Client/Create/...   (prefer Clients)
+```
