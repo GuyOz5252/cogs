@@ -1,3 +1,4 @@
+using CoGS.Core;
 using CoGS.Sample.Events;
 using CoGS.Sample.Options;
 using Microsoft.Extensions.Options;

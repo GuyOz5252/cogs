@@ -1,3 +1,5 @@
+using CoGS.Core;
+
 namespace CoGS.Sample.Events;
 
 public sealed record OrderProcessed : IEvent

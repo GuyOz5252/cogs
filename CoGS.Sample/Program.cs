@@ -1,5 +1,6 @@
 using CoGS.Sample.Components;
 using CoGS.Sample.Events;
+using CoGS.Sample.Options;
 using CoGS.Server.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
