@@ -1,0 +1,10 @@
+global using CoGS.Core;
+global using CoGS.Core.Rules;
+global using CoGS.Server.Routing;
+global using System.Reflection;
+global using System.Threading.Channels;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.Extensions.Options;

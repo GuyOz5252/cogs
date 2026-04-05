@@ -1,0 +1,31 @@
+---
+description: Enforce minimal visibility for class properties and fields
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Minimal Member Visibility
+
+## Properties
+
+If a property is not accessed outside its declaring class, make it `private`.
+
+```csharp
+// ❌ BAD — not used outside the class
+public CancellationTokenSource? Cts { get; set; }
+
+// ✅ GOOD
+private CancellationTokenSource? Cts { get; set; }
+```
+
+## Fields
+
+If a field is not reassigned after construction and not accessed outside its class, make it `private readonly`.
+
+```csharp
+// ❌ BAD — never reassigned, never accessed externally
+private Dictionary<string, Type> _types = new();
+
+// ✅ GOOD
+private readonly Dictionary<string, Type> _types = new();
+```

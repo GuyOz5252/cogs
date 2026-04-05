@@ -1,0 +1,21 @@
+---
+description: Private fields must use _camelCase naming convention
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Private Field Naming
+
+Private fields must be prefixed with `_` and use camelCase.
+
+```csharp
+// ❌ BAD
+private readonly Dictionary<string, Type> types = new();
+private CancellationTokenSource cts;
+private readonly ILogger Logger;
+
+// ✅ GOOD
+private readonly Dictionary<string, Type> _types = new();
+private CancellationTokenSource? _cts;
+private readonly ILogger _logger;
+```

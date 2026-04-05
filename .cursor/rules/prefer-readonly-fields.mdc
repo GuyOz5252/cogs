@@ -1,0 +1,25 @@
+---
+description: Prefer private readonly fields over get-only private properties
+globs: **/*.cs
+alwaysApply: false
+---
+
+# Prefer Private Readonly Fields
+
+When a member is private, only assigned at construction, and never needs property semantics (binding, serialization, interface contract), use a `private readonly` field instead of a get-only auto-property.
+
+```csharp
+// ❌ BAD — private get-only auto-property with no reason to be a property
+private PipelineDescriptor Descriptor { get; }
+private ComponentTypeRegistry TypeRegistry { get; } = new();
+
+// ✅ GOOD — private readonly field
+private readonly PipelineDescriptor _descriptor;
+private readonly ComponentTypeRegistry _typeRegistry = new();
+```
+
+Properties are appropriate when:
+- The member is part of a public/internal API surface
+- It implements an interface or is an override
+- It needs data-binding, serialization, or configuration binding
+- It has a non-trivial getter or setter

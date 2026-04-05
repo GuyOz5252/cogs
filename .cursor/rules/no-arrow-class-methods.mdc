@@ -1,0 +1,41 @@
+---
+description: Avoid expression-bodied (arrow =>) implementations for class methods
+globs: **/*.cs
+alwaysApply: false
+---
+
+# No Arrow Functions for Class Methods
+
+Use block bodies for class methods. Expression-bodied members (`=>`) are only acceptable for simple property getters, trivial one-liner lambdas passed as arguments, and operator overloads.
+
+```csharp
+// ❌ BAD — arrow body on a class method
+public override Task HandleEventAsync(IEvent @event, CancellationToken ct)
+    => ProcessAsync(@event, ct);
+
+protected ValueTask PublishAsync(IEvent @event, CancellationToken ct)
+    => Publisher.PublishAsync(@event, ct);
+
+public Task StartAsync(CancellationToken ct) => Task.CompletedTask;
+
+// ✅ GOOD — block body for class methods
+public override Task HandleEventAsync(IEvent @event, CancellationToken ct)
+{
+    return ProcessAsync(@event, ct);
+}
+
+protected ValueTask PublishAsync(IEvent @event, CancellationToken ct)
+{
+    return Publisher.PublishAsync(@event, ct);
+}
+
+public Task StartAsync(CancellationToken ct)
+{
+    return Task.CompletedTask;
+}
+
+// ✅ OK — simple property getters and lambdas
+public string Name => _name;
+private KafkaListenerOptions Options => _optionsMonitor.Get(Name);
+services.AddKeyedSingleton<IComponent>(name, (sp, _) => Create(sp));
+```
