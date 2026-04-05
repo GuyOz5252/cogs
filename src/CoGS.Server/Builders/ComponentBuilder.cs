@@ -1,3 +1,5 @@
+using CoGS.Core;
+
 namespace CoGS.Server.Builders;
 
 public sealed class ComponentBuilder

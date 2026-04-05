@@ -1,3 +1,7 @@
+using System.Threading.Channels;
+using CoGS.Core;
+using Microsoft.Extensions.Logging;
+
 namespace CoGS.Server.Hosting;
 
 internal sealed class ComponentHost(ComponentBase component, ChannelReader<IEvent> inbox, ILogger logger) : IAsyncDisposable

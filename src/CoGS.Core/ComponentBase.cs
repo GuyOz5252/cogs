@@ -1,6 +1,6 @@
 namespace CoGS.Core;
 
-public abstract class ComponentBase : IComponent
+public abstract class ComponentBase
 {
     public string Name { get; internal set; } = string.Empty;
 

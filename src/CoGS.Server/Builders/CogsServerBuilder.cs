@@ -1,5 +1,9 @@
+using System.Reflection;
+using CoGS.Core;
 using CoGS.Server.Configuration;
 using CoGS.Server.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CoGS.Server.Builders;
 
@@ -48,7 +52,7 @@ public sealed class CogsServerBuilder
         foreach (var registration in _descriptor.Components)
         {
             _services.ConfigureComponentOptions(registration, _configuration);
-            _services.AddKeyedSingleton<IComponent>(registration.Name, (serviceProvider, _) =>
+            _services.AddKeyedSingleton<ComponentBase>(registration.Name, (serviceProvider, _) =>
                 ActivatorUtilities.CreateInstance<ComponentBase>(
                     serviceProvider,
                     registration.ComponentType,

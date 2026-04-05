@@ -1,3 +1,6 @@
+using CoGS.Core;
+using CoGS.Core.Rules;
+
 namespace CoGS.Server.Builders;
 
 public sealed class RuleBuilder
