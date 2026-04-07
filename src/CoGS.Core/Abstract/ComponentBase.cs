@@ -1,12 +1,8 @@
-using CoGS.Core.EventPublishers;
-
 namespace CoGS.Core.Abstract;
 
 public abstract class ComponentBase
 {
     public string Name { get; internal set; } = string.Empty;
-
-    internal IEventPublisher Publisher { get; set; } = new NullEventPublisher();
 
     public virtual Task StartAsync(CancellationToken cancellationToken)
     {
@@ -25,7 +21,7 @@ public abstract class ComponentBase
 
     protected ValueTask PublishAsync(IEvent @event, CancellationToken cancellationToken = default)
     {
-        return Publisher.PublishAsync(@event, cancellationToken);
+        return ValueTask.CompletedTask;
     }
 
     protected EventMetadata CreateMetadata(string? correlationId = null)

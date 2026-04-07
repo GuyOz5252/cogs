@@ -13,9 +13,5 @@
     <ItemGroup>
       <ProjectReference Include="..\CoGS.Core\CoGS.Core.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Routing\" />
-    </ItemGroup>
 
 </Project>
