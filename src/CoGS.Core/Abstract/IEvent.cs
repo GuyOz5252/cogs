@@ -1,4 +1,4 @@
-namespace CoGS.Core;
+namespace CoGS.Core.Abstract;
 
 public interface IEvent
 {

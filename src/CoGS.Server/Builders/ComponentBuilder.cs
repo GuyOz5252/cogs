@@ -1,4 +1,6 @@
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Server.Registrations;
 
 namespace CoGS.Server.Builders;
 
@@ -20,20 +22,19 @@ public sealed class ComponentBuilder
 
     public ComponentBuilder SubscribesTo(string sourceComponentName)
     {
-        _registration.Subscriptions.Add(new Subscription(sourceComponentName));
+        _registration.SubscriptionRegistrations.Add(new SubscriptionRegistration
+        {
+            SourceComponentName = sourceComponentName,
+        });
         return this;
     }
 
-    public ComponentBuilder SubscribesTo(string sourceComponentName, IRule rule)
+    public ComponentBuilder SubscribesTo(string sourceComponentName, Func<IEvent, bool> rule)
     {
-        _registration.Subscriptions.Add(new Subscription(sourceComponentName, rule));
-        return this;
-    }
-
-    public ComponentBuilder SubscribesTo(string sourceComponentName, Func<RuleBuilder, IRule>? ruleFactory)
-    {
-        var rule = ruleFactory?.Invoke(new RuleBuilder());
-        _registration.Subscriptions.Add(new Subscription(sourceComponentName, rule));
+        _registration.SubscriptionRegistrations.Add(new SubscriptionRegistration
+        {
+            SourceComponentName = sourceComponentName,
+        });
         return this;
     }
 }

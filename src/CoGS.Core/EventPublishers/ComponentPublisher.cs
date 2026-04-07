@@ -1,6 +1,6 @@
-using CoGS.Core;
+using CoGS.Core.Abstract;
 
-namespace CoGS.Server.Routing;
+namespace CoGS.Core.EventPublishers;
 
 internal sealed class ComponentPublisher(string sourceComponentName, EventRouter router) : IEventPublisher
 {

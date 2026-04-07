@@ -1,7 +1,9 @@
 using System.Threading.Channels;
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Core.EventPublishers;
 using CoGS.Server.Hosting;
-using CoGS.Server.Routing;
+using CoGS.Server.Registrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -13,7 +15,7 @@ internal sealed class CogsHostedService : IHostedService, IAsyncDisposable
     private readonly ILogger<CogsHostedService> _logger;
     private readonly ILoggerFactory _loggerFactory;
     private readonly IServiceProvider _serviceProvider;
-    private readonly PipelineDescriptor _pipelineDescriptor;
+    private readonly PipelineRegistration _pipelineRegistration;
     private readonly EventRouter _eventRouter;
     private readonly List<ManagedComponent> _managedComponents = [];
     
@@ -23,13 +25,13 @@ internal sealed class CogsHostedService : IHostedService, IAsyncDisposable
         ILogger<CogsHostedService> logger,
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
-        PipelineDescriptor pipelineDescriptor, 
+        PipelineRegistration pipelineRegistration, 
         EventRouter eventRouter)
     {
         _logger = logger;
         _loggerFactory = loggerFactory;
         _serviceProvider = serviceProvider;
-        _pipelineDescriptor = pipelineDescriptor;
+        _pipelineRegistration = pipelineRegistration;
         _eventRouter = eventRouter;
     }
 
@@ -37,7 +39,7 @@ internal sealed class CogsHostedService : IHostedService, IAsyncDisposable
     {
         _cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
-        foreach (var registration in _pipelineDescriptor.Components)
+        foreach (var registration in _pipelineRegistration.Components)
         {
             var component = _serviceProvider.GetRequiredKeyedService<ComponentBase>(registration.Name);
 

@@ -1,7 +1,10 @@
 using System.Reflection;
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Core.Attributes;
 using CoGS.Server.Configuration;
 using CoGS.Server.Extensions;
+using CoGS.Server.Registrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,41 +14,31 @@ public sealed class CogsServerBuilder
 {
     private readonly IServiceCollection _services;
     private readonly IConfiguration _configuration;
-    private readonly PipelineDescriptor _descriptor;
-    private readonly List<PendingRuleBinding> _pendingRuleBindings;
+    private readonly PipelineRegistration _registration;
 
     internal CogsServerBuilder(
         IServiceCollection services,
         IConfiguration configuration,
-        PipelineDescriptor descriptor,
-        List<PendingRuleBinding> pendingRuleBindings)
+        PipelineRegistration registration)
     {
         _services = services;
         _configuration = configuration;
-        _descriptor = descriptor;
-        _pendingRuleBindings = pendingRuleBindings;
+        _registration = registration;
     }
 
     public void FromConfiguration(string sectionName = "CoGS")
     {
-        var binder = new PipelineConfigurationBinder(ScanComponentTypes(), _pendingRuleBindings);
-        binder.Bind(_descriptor, _configuration, sectionName);
-
-        var registrar = new CogsTypeServiceRegistrar();
-        foreach (var binding in _pendingRuleBindings)
-        {
-            registrar.RegisterRuleTree(_services, _configuration.GetSection(binding.ConfigPath));
-        }
-
+        var binder = new PipelineConfigurationBinder(ScanComponentTypes());
+        binder.Bind(_registration, _configuration, sectionName);
         RegisterComponents();
     }
 
     public void FromPipeline(Action<PipelineBuilder> configure, string sectionName = "CoGS")
     {
-        var pipelineBuilder = new PipelineBuilder(_descriptor);
+        var pipelineBuilder = new PipelineBuilder(_registration);
         configure.Invoke(pipelineBuilder);
 
-        foreach (var registration in _descriptor.Components)
+        foreach (var registration in _registration.Components)
         {
             registration.ConfigSectionPath ??= $"{sectionName}:Components:{registration.Name}";
         }
@@ -62,7 +55,7 @@ public sealed class CogsServerBuilder
 
     private void RegisterComponents()
     {
-        foreach (var registration in _descriptor.Components)
+        foreach (var registration in _registration.Components)
         {
             _services.ConfigureComponentOptions(registration, _configuration);
             _services.AddKeyedSingleton<ComponentBase>(registration.Name, (serviceProvider, _) =>

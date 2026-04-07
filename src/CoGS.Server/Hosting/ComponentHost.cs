@@ -1,5 +1,6 @@
 using System.Threading.Channels;
 using CoGS.Core;
+using CoGS.Core.Abstract;
 using Microsoft.Extensions.Logging;
 
 namespace CoGS.Server.Hosting;

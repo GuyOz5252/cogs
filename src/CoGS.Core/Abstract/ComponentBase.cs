@@ -1,4 +1,6 @@
-namespace CoGS.Core;
+using CoGS.Core.EventPublishers;
+
+namespace CoGS.Core.Abstract;
 
 public abstract class ComponentBase
 {

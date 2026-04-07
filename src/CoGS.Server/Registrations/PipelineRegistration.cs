@@ -1,6 +1,6 @@
-namespace CoGS.Core;
+namespace CoGS.Server.Registrations;
 
-public sealed class PipelineDescriptor
+public sealed class PipelineRegistration
 {
     private readonly List<ComponentRegistration> _components = [];
 

@@ -1,5 +1,6 @@
 using System.Reflection;
-using CoGS.Core;
+using CoGS.Core.Attributes;
+using CoGS.Server.Registrations;
 using Microsoft.Extensions.Configuration;
 
 namespace CoGS.Server.Configuration;
@@ -7,17 +8,14 @@ namespace CoGS.Server.Configuration;
 internal sealed class PipelineConfigurationBinder
 {
     private readonly IReadOnlyDictionary<string, Type> _componentTypes;
-    private readonly List<PendingRuleBinding> _pendingRuleBindings;
 
     public PipelineConfigurationBinder(
-        IReadOnlyDictionary<string, Type> componentTypes,
-        List<PendingRuleBinding> pendingRuleBindings)
+        IReadOnlyDictionary<string, Type> componentTypes)
     {
         _componentTypes = componentTypes;
-        _pendingRuleBindings = pendingRuleBindings;
     }
 
-    public void Bind(PipelineDescriptor descriptor, IConfiguration configuration, string sectionName)
+    public void Bind(PipelineRegistration pipelineRegistration, IConfiguration configuration, string sectionName)
     {
         var section = configuration.GetSection($"{sectionName}:Components");
 
@@ -43,9 +41,8 @@ internal sealed class PipelineConfigurationBinder
                 OptionsType = optionsType,
                 ConfigSectionPath = $"{sectionName}:Components:{name}",
             };
-
-            ParseSubscriptions(componentSection.GetSection("SubscribesTo"), registration);
-            descriptor.AddComponent(registration);
+            
+            pipelineRegistration.AddComponent(registration);
         }
     }
 
@@ -55,31 +52,5 @@ internal sealed class PipelineConfigurationBinder
                         ?? throw new InvalidOperationException(
                             $"Component: '{componentType}' must be decorated with CogsComponentAttribute");
         return attribute.OptionsType;
-    }
-
-    private void ParseSubscriptions(IConfigurationSection section, ComponentRegistration registration)
-    {
-        foreach (var child in section.GetChildren())
-        {
-            if (child.Value is not null)
-            {
-                registration.Subscriptions.Add(new Subscription(child.Value));
-            }
-            else
-            {
-                var componentName = child["Component"]
-                                    ?? throw new InvalidOperationException(
-                                        "Subscription object must have a 'Component' property.");
-
-                var ruleSection = child.GetSection("Rule");
-                if (ruleSection.Exists())
-                {
-                    _pendingRuleBindings.Add(new PendingRuleBinding(
-                        registration, registration.Subscriptions.Count, ruleSection.Path));
-                }
-
-                registration.Subscriptions.Add(new Subscription(componentName));
-            }
-        }
     }
 }

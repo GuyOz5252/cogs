@@ -1,8 +1,9 @@
 using CoGS.Core;
+using CoGS.Core.Abstract;
 using CoGS.Server.Builders;
 using CoGS.Server.Configuration;
 using CoGS.Server.HostedServices;
-using CoGS.Server.Routing;
+using CoGS.Server.Registrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,25 +13,12 @@ public static class ServiceCollectionExtensions
 {
     public static CogsServerBuilder AddCogs(this IServiceCollection services, IConfiguration configuration)
     {
-        var descriptor = new PipelineDescriptor();
-        var pendingRuleBindings = new List<PendingRuleBinding>();
-
-        services.AddSingleton(sp =>
-        {
-            foreach (var binding in pendingRuleBindings)
-            {
-                var rule = sp.GetRequiredKeyedService<IRule>(binding.ConfigPath);
-                binding.Registration.Subscriptions[binding.SubscriptionIndex] =
-                    binding.Registration.Subscriptions[binding.SubscriptionIndex] with { Rule = rule };
-            }
-
-            return descriptor;
-        });
-
+        var descriptor = new PipelineRegistration();
+        
         services.AddSingleton<EventRouter>();
         services.AddHostedService<CogsHostedService>();
 
-        return new CogsServerBuilder(services, configuration, descriptor, pendingRuleBindings);
+        return new CogsServerBuilder(services, configuration, descriptor);
     }
     
     internal static void ConfigureComponentOptions(

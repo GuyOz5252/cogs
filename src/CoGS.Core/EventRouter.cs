@@ -1,7 +1,7 @@
 using System.Threading.Channels;
-using CoGS.Core;
+using CoGS.Core.Abstract;
 
-namespace CoGS.Server.Routing;
+namespace CoGS.Core;
 
 internal sealed class EventRouter
 {

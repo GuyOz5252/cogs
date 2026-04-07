@@ -1,4 +1,5 @@
 using CoGS.Core;
+using CoGS.Core.Abstract;
 
 namespace CoGS.Sample.Events;
 

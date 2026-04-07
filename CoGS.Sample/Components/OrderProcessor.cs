@@ -1,4 +1,6 @@
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Core.Attributes;
 using CoGS.Sample.Events;
 
 namespace CoGS.Sample.Components;

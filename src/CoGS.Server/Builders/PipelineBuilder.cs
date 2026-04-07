@@ -1,14 +1,16 @@
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Server.Registrations;
 
 namespace CoGS.Server.Builders;
 
 public sealed class PipelineBuilder
 {
-    private readonly PipelineDescriptor _descriptor;
+    private readonly PipelineRegistration _registration;
 
-    internal PipelineBuilder(PipelineDescriptor descriptor)
+    internal PipelineBuilder(PipelineRegistration registration)
     {
-        _descriptor = descriptor;
+        _registration = registration;
     }
 
     public ComponentBuilder AddComponent<TComponent>(string name) where TComponent : ComponentBase
@@ -18,7 +20,7 @@ public sealed class PipelineBuilder
             Name = name,
             ComponentType = typeof(TComponent)
         };
-        _descriptor.AddComponent(registration);
+        _registration.AddComponent(registration);
         return new ComponentBuilder(registration);
     }
 }

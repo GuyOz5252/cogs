@@ -1,3 +1,5 @@
+using CoGS.Core.Abstract;
+
 namespace CoGS.Core;
 
 public sealed record Subscription(

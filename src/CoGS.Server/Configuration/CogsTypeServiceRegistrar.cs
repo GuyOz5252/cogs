@@ -1,5 +1,7 @@
 using System.Reflection;
 using CoGS.Core;
+using CoGS.Core.Abstract;
+using CoGS.Core.Attributes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
