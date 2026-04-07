@@ -12,18 +12,31 @@ public sealed class CogsServerBuilder
     private readonly IServiceCollection _services;
     private readonly IConfiguration _configuration;
     private readonly PipelineDescriptor _descriptor;
+    private readonly List<PendingRuleBinding> _pendingRuleBindings;
 
-    internal CogsServerBuilder(IServiceCollection services, IConfiguration configuration, PipelineDescriptor descriptor)
+    internal CogsServerBuilder(
+        IServiceCollection services,
+        IConfiguration configuration,
+        PipelineDescriptor descriptor,
+        List<PendingRuleBinding> pendingRuleBindings)
     {
         _services = services;
         _configuration = configuration;
         _descriptor = descriptor;
+        _pendingRuleBindings = pendingRuleBindings;
     }
 
     public void FromConfiguration(string sectionName = "CoGS")
     {
-        var binder = new PipelineConfigurationBinder(ScanComponentTypes());
+        var binder = new PipelineConfigurationBinder(ScanComponentTypes(), _pendingRuleBindings);
         binder.Bind(_descriptor, _configuration, sectionName);
+
+        var registrar = new CogsTypeServiceRegistrar();
+        foreach (var binding in _pendingRuleBindings)
+        {
+            registrar.RegisterRuleTree(_services, _configuration.GetSection(binding.ConfigPath));
+        }
+
         RegisterComponents();
     }
 
@@ -53,10 +66,12 @@ public sealed class CogsServerBuilder
         {
             _services.ConfigureComponentOptions(registration, _configuration);
             _services.AddKeyedSingleton<ComponentBase>(registration.Name, (serviceProvider, _) =>
-                ActivatorUtilities.CreateInstance<ComponentBase>(
-                    serviceProvider,
-                    registration.ComponentType,
-                    registration.Name));
+            {
+                var component = (ComponentBase)ActivatorUtilities.CreateInstance(
+                    serviceProvider, registration.ComponentType);
+                component.Name = registration.Name;
+                return component;
+            });
         }
     }
 
@@ -82,7 +97,8 @@ public sealed class CogsServerBuilder
                     && type.IsAssignableTo(typeof(ComponentBase)))
                 {
                     var attribute = type.GetCustomAttribute<CogsComponentAttribute>()
-                        ?? throw new InvalidOperationException($"Component: '{type}' must be decorated with CogsComponentAttribute");
+                                    ?? throw new InvalidOperationException(
+                                        $"Component: '{type}' must be decorated with CogsComponentAttribute");
                     types[attribute.Name] = type;
                 }
             }

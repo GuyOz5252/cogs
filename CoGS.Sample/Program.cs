@@ -5,38 +5,38 @@ using CoGS.Server.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// builder.Services.AddCogs()
-//     .FromConfiguration(builder.Configuration);
-//
-// var app = builder.Build();
-//
-// await app.RunAsync();
+builder.Services.AddCogs(builder.Configuration)
+    .FromConfiguration();
+
+var app = builder.Build();
+
+await app.RunAsync();
 
 // -------------------------------------------------------------------
 // Alternative: fully code-based pipeline with rules (no appsettings)
 // -------------------------------------------------------------------
 
-builder.Services.AddCogs(builder.Configuration)
-    .FromPipeline(pipeline =>
-    {
-        pipeline.AddComponent<KafkaListener>("listener")
-            .Configure<KafkaListenerOptions>(opts =>
-            {
-                opts.Topic = "orders-in";
-                opts.ConsumerGroup = "order-service";
-            })
-            .SubscribesTo("listener", r => r.EventType<OrderReceived>());
+// builder.Services.AddCogs(builder.Configuration)
+//     .FromPipeline(pipeline =>
+//     {
+//         pipeline.AddComponent<KafkaListener>("listener")
+//             .Configure<KafkaListenerOptions>(opts =>
+//             {
+//                 opts.Topic = "orders-in";
+//                 opts.ConsumerGroup = "order-service";
+//             })
+//             .SubscribesTo("listener", r => r.EventType<OrderReceived>());
 
-        pipeline.AddComponent<OrderProcessor>("processor")
-            .SubscribesTo("listener", r => r.EventType<OrderReceived>());
+//         pipeline.AddComponent<OrderProcessor>("processor")
+//             .SubscribesTo("listener", r => r.EventType<OrderReceived>());
 
-        pipeline.AddComponent<KafkaDispatcher>("dispatcher")
-            .Configure<KafkaDispatcherOptions>(opts =>
-            {
-                opts.Topic = "orders-out";
-            })
-            .SubscribesTo("processor");
-    });
+//         pipeline.AddComponent<KafkaDispatcher>("dispatcher")
+//             .Configure<KafkaDispatcherOptions>(opts =>
+//             {
+//                 opts.Topic = "orders-out";
+//             })
+//             .SubscribesTo("processor");
+//     });
 
 // -------------------------------------------------------------------
 // Alternative: hybrid — topology from code, options base from config

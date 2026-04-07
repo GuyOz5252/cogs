@@ -15,13 +15,18 @@ public sealed class RuleBuilder
         return new PredicateRule(predicate);
     }
 
+    public IRule Not(IRule inner)
+    {
+        return new NotRule(inner);
+    }
+
     public IRule All(params IRule[] rules)
     {
-        return new CompositeRule(rules, true);
+        return new AllRule(rules);
     }
 
     public IRule Any(params IRule[] rules)
     {
-        return new CompositeRule(rules, false);
+        return new AnyRule(rules);
     }
 }
